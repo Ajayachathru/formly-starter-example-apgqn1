@@ -1,6 +1,23 @@
 @import '~bootstrap/scss/bootstrap.scss';
-body { padding: 10px; }
+body {
+  margin: 0 auto;
+  background-color: aliceblue;
+  padding: 10px;
+}
 
-/**  Copyright 2018 Google Inc. All Rights Reserved.
-    Use of this source code is governed by an MIT-style license that
-    can be found in the LICENSE file at http://angular.io/license */
+form {
+  margin: 0 auto;
+  width: 40%;
+  background: #f5f6f7;
+}
+
+@media only screen and (max-width: 600px) {
+  form {
+    width: 95%;
+  }
+}
+
+form {
+  padding: 2rem;
+  background-color: white;
+}
