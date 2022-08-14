@@ -1,4 +1,12 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <formly-form [model]="model" [fields]="fields" [options]="options" [form]="form"></formly-form>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="tcm">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <h3>Transfer Cost Model</h3>
+    <formly-form
+      [model]="model"
+      [fields]="fields"
+      [options]="options"
+      [form]="form"
+    ></formly-form>
+    <button type="submit" class="btn btn-primary">Calculate</button>
+  </form>
+</div>
