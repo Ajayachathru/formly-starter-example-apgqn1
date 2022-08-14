@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 
@@ -101,6 +101,7 @@ interface SummaryData {
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+  @ViewChild('summaryCards') summaryCards;
   showSummary = false;
 
   recommendedTransfer: RecommendedProps;
@@ -344,8 +345,8 @@ export class AppComponent {
           templateOptions: {
             min: 1,
             type: 'number',
-            label: 'Blank & Holes/slots/cutouts Perimeter',
-            placeholder: 'Enter Blank & Holes/slots/cutouts Perimeter',
+            label: 'Blank & Holes / slots / cutouts Perimeter',
+            placeholder: 'Enter Blank & Holes / slots / cutouts Perimeter',
             required: true,
           },
         },
@@ -733,5 +734,12 @@ export class AppComponent {
     });
 
     this.showSummary = true;
+
+    setTimeout(() => {
+      this.summaryCards.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 200);
   }
 }
