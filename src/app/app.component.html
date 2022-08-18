@@ -11,8 +11,8 @@
   </form>
 
   <ng-container *ngIf="showSummary">
-    <div class="card mt-3">
-      <div class="card-body table-responsive" #summaryCards>
+    <div class="card mt-3" #summaryCards>
+      <div class="card-body table-responsive">
         <table class="table table-bordered">
           <tbody>
             <tr *ngFor="let s of derivedMetrics">

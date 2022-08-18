@@ -892,7 +892,7 @@ export class AppComponent {
     setTimeout(() => {
       this.summaryCards.nativeElement.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'start',
       });
     }, 200);
   }
