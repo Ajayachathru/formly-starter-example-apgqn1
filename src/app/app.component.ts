@@ -94,6 +94,8 @@ interface SummaryData {
   label: string;
 
   value: number;
+
+  type?: string;
 }
 
 @Component({
@@ -157,6 +159,119 @@ export class AppComponent {
       label: 'Shut Height (mm)',
       actual: 650,
       recommended: 0,
+    },
+  ];
+
+  transferMachineSummary: SummaryData[] = [
+    {
+      key: 'name',
+      label: 'Transfer Machine',
+      value: 0,
+      type: 'string',
+    },
+    {
+      key: 'reach',
+      label: 'Transfer Mech Reach In (secs)',
+      value: 0,
+    },
+    {
+      key: 'lift',
+      label: 'Transfer Mech Lift (secs)',
+      value: 0,
+    },
+    {
+      key: 'mechTransfer',
+      label: 'Transfer Mech Transfer (secs)',
+      value: 0,
+    },
+    {
+      key: 'drop',
+      label: 'Transfer Mech Drop (secs)',
+      value: 0,
+    },
+    {
+      key: 'retract',
+      label: 'Transfer Mech Retract (secs)',
+      value: 0,
+    },
+    {
+      key: 'strokePerMinute',
+      label: 'Stroke Per minute (secs)',
+      value: 0,
+    },
+    {
+      key: 'formDepthTime',
+      label: 'Form Depth Time (secs)',
+      value: 0,
+    },
+    {
+      key: 'holdingTime',
+      label: 'Holding Time (secs)',
+      value: 0,
+    },
+    {
+      key: 'totalCycleTime',
+      label: 'Total cycle time (secs)',
+      value: 0,
+    },
+    {
+      key: 'setupTime',
+      label: 'Setup Time (hr)',
+      value: 0,
+    },
+    {
+      key: 'noOfLabor',
+      label: 'No of Labor',
+      value: 0,
+    },
+    {
+      key: 'laborRate',
+      label: 'Transfer Labor Rate/Hr',
+      value: 0,
+    },
+    {
+      key: 'directOverhead',
+      label: 'Transfer Direct Overhead/Hr',
+      value: 0,
+    },
+    {
+      key: 'batchQty',
+      label: 'Batch Qty',
+      value: 0,
+    },
+  ];
+
+  offlineBlankingSummary: SummaryData[] = [
+    {
+      key: 'name',
+      label: 'Offline Blanking Machine',
+      value: 0,
+      type: 'string',
+    },
+    {
+      key: 'laborRate',
+      label: 'Transfer Labor Rate/Hr',
+      value: 0,
+    },
+    {
+      key: 'directOverhead',
+      label: 'Transfer Direct Overhead/Hr',
+      value: 0,
+    },
+    {
+      key: 'cycleTime',
+      label: 'Cycle Time (secs)',
+      value: 0,
+    },
+    {
+      key: 'overallCycleTime',
+      label: 'Overall cycle time (secs)',
+      value: 0,
+    },
+    {
+      key: 'setupTime',
+      label: 'Setup Time (hr)',
+      value: 0,
     },
   ];
 
@@ -651,6 +766,52 @@ export class AppComponent {
 
   totalTonnage = 0;
 
+  transferMachine = {
+    name: '',
+
+    reach: 0,
+
+    lift: 0,
+
+    mechTransfer: 0,
+
+    drop: 0,
+
+    retract: 0,
+
+    strokePerMinute: 0,
+
+    formDepthTime: 0,
+
+    holdingTime: 0,
+
+    totalCycleTime: 0,
+
+    setupTime: 0,
+
+    noOfLabor: 0,
+
+    laborRate: 0,
+
+    directOverhead: 0,
+
+    batchQty: 0,
+  };
+
+  offlineBlanking = {
+    name: 'Offline Blank Press - 5,000kN Press Force',
+
+    laborRate: 5.48,
+
+    directOverhead: 48.69,
+
+    cycleTime: 2,
+
+    overallCycleTime: 0,
+
+    setupTime: 0.5,
+  };
+
   onSubmit() {
     const fv: FormModel = this.form.value;
 
@@ -707,7 +868,7 @@ export class AppComponent {
       this.bendingPressTonnage +
       this.formingPressTonnage;
 
-    let transferMachine = {
+    this.transferMachine = {
       name: 'Transfer Die Press - 1,500kN Press Force',
 
       reach: 1,
@@ -739,29 +900,18 @@ export class AppComponent {
       batchQty: fv.annualVolume / 12,
     };
 
-    transferMachine['totalCycleTime'] =
-      transferMachine.reach +
-      transferMachine.lift +
-      transferMachine.drop +
-      transferMachine.retract +
-      transferMachine.strokePerMinute +
-      transferMachine.holdingTime;
+    this.transferMachine['totalCycleTime'] =
+      this.transferMachine.reach +
+      this.transferMachine.lift +
+      this.transferMachine.drop +
+      this.transferMachine.retract +
+      this.transferMachine.strokePerMinute +
+      this.transferMachine.holdingTime;
 
-    let offlineBlanking = {
-      name: 'Offline Blank Press - 5,000kN Press Force',
-
-      laborRate: 5.48,
-
-      directOverhead: 48.69,
-
-      cycleTime: 2,
-
-      overallCycleTime: 0,
-
-      setupTime: 0.5,
-    };
-
-    offlineBlanking.overallCycleTime = Math.max(6, offlineBlanking.cycleTime);
+    this.offlineBlanking.overallCycleTime = Math.max(
+      6,
+      this.offlineBlanking.cycleTime
+    );
 
     this.recommendedTransfer = {
       force: this.totalTonnage,
@@ -810,22 +960,26 @@ export class AppComponent {
       materialCost: this.materialCost * this.grossWeight,
 
       laborCost:
-        (transferMachine.totalCycleTime / 3600) * transferMachine.laborRate +
-        (offlineBlanking.overallCycleTime / 3600) * offlineBlanking.laborRate,
+        (this.transferMachine.totalCycleTime / 3600) *
+          this.transferMachine.laborRate +
+        (this.offlineBlanking.overallCycleTime / 3600) *
+          this.offlineBlanking.laborRate,
 
       directOverheadCost:
-        (transferMachine.totalCycleTime / 3600) *
-          transferMachine.directOverhead +
-        (offlineBlanking.overallCycleTime / 3600) *
-          offlineBlanking.directOverhead,
+        (this.transferMachine.totalCycleTime / 3600) *
+          this.transferMachine.directOverhead +
+        (this.offlineBlanking.overallCycleTime / 3600) *
+          this.offlineBlanking.directOverhead,
 
       amortizedBatchSetup:
-        (transferMachine.setupTime *
-          (transferMachine.laborRate + transferMachine.directOverhead)) /
-          transferMachine.batchQty +
-        (offlineBlanking.setupTime *
-          (offlineBlanking.laborRate + offlineBlanking.directOverhead)) /
-          transferMachine.batchQty,
+        (this.transferMachine.setupTime *
+          (this.transferMachine.laborRate +
+            this.transferMachine.directOverhead)) /
+          this.transferMachine.batchQty +
+        (this.offlineBlanking.setupTime *
+          (this.offlineBlanking.laborRate +
+            this.offlineBlanking.directOverhead)) /
+          this.transferMachine.batchQty,
 
       otherDirectCost: 0,
 
@@ -880,6 +1034,21 @@ export class AppComponent {
     this.summaryData.map((sd) => {
       sd.value = this.summary[sd.key];
       return sd;
+    });
+
+    this.derivedMetrics.map((sd) => {
+      sd.value = this[sd.key];
+      return sd;
+    });
+
+    this.transferMachineSummary.map((d) => {
+      d.value = this.transferMachine[d.key];
+      return d;
+    });
+
+    this.offlineBlankingSummary.map((d) => {
+      d.value = this.offlineBlanking[d.key];
+      return d;
     });
 
     this.derivedMetrics.map((sd) => {

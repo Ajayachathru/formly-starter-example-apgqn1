@@ -25,6 +25,40 @@
     </div>
 
     <div class="card mt-3">
+      <div class="card-header text-white bg-info">Transfer Machine</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered">
+          <tbody>
+            <tr *ngFor="let s of transferMachineSummary">
+              <th scope="row">{{ s.label }}</th>
+              <td *ngIf="s.type === 'string'">{{ s.value }}</td>
+              <td *ngIf="s.type !== 'string'">
+                {{ s.value | number: '1.0-2' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header text-white bg-info">Offline Blanking Summary</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered">
+          <tbody>
+            <tr *ngFor="let s of offlineBlankingSummary">
+              <th scope="row">{{ s.label }}</th>
+              <td *ngIf="s.type === 'string'">{{ s.value }}</td>
+              <td *ngIf="s.type !== 'string'">
+                {{ s.value | number: '1.0-2' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mt-3">
       <div class="card-header text-white bg-info">Recommended Transfer</div>
       <div class="card-body table-responsive">
         <table class="table table-bordered">
