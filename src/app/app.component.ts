@@ -160,6 +160,129 @@ export class AppComponent {
     },
   ];
 
+  derivedMetrics: SummaryData[] = [
+    {
+      key: 'edgeMarginWidth',
+      label: 'Edge margin width',
+      value: 0,
+    },
+    {
+      key: 'partSpaceWidth',
+      label: 'Part search width',
+      value: 0,
+    },
+    {
+      key: 'height',
+      label: 'Height',
+      value: 0,
+    },
+    {
+      key: 'partAddendumPerSide',
+      label: 'Part Addendum per side',
+      value: 0,
+    },
+    {
+      key: 'density',
+      label: 'Density',
+      value: 0,
+    },
+    {
+      key: 'finalPartLength',
+      label: 'Final Part Length',
+      value: 0,
+    },
+    {
+      key: 'finalPartWidth',
+      label: 'Final Part Width',
+      value: 0,
+    },
+    {
+      key: 'grossWeight',
+      label: 'Gross weight in kg',
+      value: 0,
+    },
+    {
+      key: 'partWeight',
+      label: 'Part weight in kg',
+      value: 0,
+    },
+    {
+      key: 'hardness',
+      label: 'Hardness',
+      value: 0,
+    },
+    {
+      key: 'tensileYieldStrength',
+      label: 'Tensile Yield Strength',
+      value: 0,
+    },
+    {
+      key: 'ultimateTensileStrength',
+      label: 'Ultimate Tensile Strength',
+      value: 0,
+    },
+    {
+      key: 'shearStrength',
+      label: 'Shear Strength',
+      value: 0,
+    },
+    {
+      key: 'youngModulus',
+      label: "Young's Modulus",
+      value: 0,
+    },
+    {
+      key: 'poissonRatio',
+      label: "Poisson's Ratio",
+      value: 0,
+    },
+    {
+      key: 'kSHE',
+      label: 'K (strain-hardening coefficient)',
+      value: 0,
+    },
+    {
+      key: 'nSHE',
+      label: 'N (strain-hardening exponent)',
+      value: 0,
+    },
+    {
+      key: 'rLPA',
+      label: 'R (Lankford parameter, average)',
+      value: 0,
+    },
+    {
+      key: 'materialCost',
+      label: 'Material Cost/Kg',
+      value: 0,
+    },
+    {
+      key: 'offlineBlankingTonnage',
+      label: 'Offline Blanking tonnage',
+      value: 0,
+    },
+    {
+      key: 'blankingPressTonnage',
+      label: 'Press Tonnage Required Blanking + Holding Force (kN)',
+      value: 0,
+    },
+    {
+      key: 'bendingPressTonnage',
+      label: 'Press Tonnage Required Bending + Holding Force (kN)',
+      value: 0,
+    },
+    {
+      key: 'formingPressTonnage',
+      label: 'Press Tonnage Required Forming + Holding Force (kN)',
+      value: 0,
+    },
+    {
+      key: 'totalTonnage',
+      label: 'Total Tonnage Required (kN)',
+      value: 0,
+    },
+  ];
+
   summary: Summary;
   summaryData: SummaryData[] = [
     {
@@ -478,85 +601,111 @@ export class AppComponent {
     },
   ];
 
+  edgeMarginWidth = 8;
+
+  partSpaceWidth = 8;
+
+  height = 0;
+
+  partAddendumPerSide = 0;
+
+  density = 7.85;
+
+  finalPartLength = 0;
+
+  finalPartWidth = 0;
+
+  partWeight = 0;
+
+  hardness = 125;
+
+  tensileYieldStrength = 240;
+
+  ultimateTensileStrength = 335;
+
+  shearStrength = 221;
+
+  youngModulus = 207000;
+
+  poissonRatio = 0.28;
+
+  kSHE = 543;
+
+  nSHE = 0.21;
+
+  rLPA = 0.99;
+
+  materialCost = 1.63;
+
+  grossWeight = 0;
+
+  offlineBlankingTonnage = 0;
+
+  lookupMultiplicationFactor = 2;
+
+  blankingPressTonnage = 0;
+
+  bendingPressTonnage = 0;
+
+  formingPressTonnage = 0;
+
+  totalTonnage = 0;
+
   onSubmit() {
     const fv: FormModel = this.form.value;
 
-    let edgeMarginWidth = 8;
+    this.height = fv.height;
 
-    let partSpaceWidth = 8;
+    this.finalPartLength =
+      this.partAddendumPerSide * 2 + this.edgeMarginWidth * 2 + fv.length;
 
-    let height = fv.height;
+    this.finalPartWidth =
+      this.partAddendumPerSide * 2 + this.partSpaceWidth * 2 + fv.length;
 
-    let partAddendumPerSide = 0;
-
-    let density = 7.85;
-
-    let finalPartLength =
-      partAddendumPerSide * 2 + edgeMarginWidth * 2 + fv.length;
-
-    let finalPartWidth =
-      partAddendumPerSide * 2 + partSpaceWidth * 2 + fv.length;
-
-    let grossWeight = Number(
+    this.grossWeight = Number(
       (
-        (finalPartLength * finalPartWidth * density * fv.thickness * 10) /
+        (this.finalPartLength *
+          this.finalPartWidth *
+          this.density *
+          fv.thickness *
+          10) /
         10000000
       ).toFixed(2)
     );
 
-    let partWeight = Number(
-      ((fv.partVolume * density * 10) / 10000000).toFixed(2)
+    this.partWeight = Number(
+      ((fv.partVolume * this.density * 10) / 10000000).toFixed(2)
     );
 
-    let hardness = 125;
-
-    let tensileYieldStrength = 240;
-
-    let ultimateTensileStrength = 335;
-
-    let shearStrength = 221;
-
-    let youngModulus = 207000;
-
-    let poissonRatio = 0.28;
-
-    let kSHE = 543;
-
-    let nSHE = 0.21;
-
-    let rLPA = 0.99;
-
-    let materialCost = 1.63;
-
-    let offlineBlankingTonnage =
-      (finalPartLength * 2 + finalPartWidth * 2) *
+    this.offlineBlankingTonnage =
+      (this.finalPartLength * 2 + this.finalPartWidth * 2) *
       fv.thickness *
-      (shearStrength / 1000);
+      (this.shearStrength / 1000);
 
-    const lookupMultiplicationFactor = 2;
-
-    let blankingPressTonnage = Math.round(
-      fv.perimeter * lookupMultiplicationFactor * (shearStrength / 1000) +
+    this.blankingPressTonnage = Math.round(
+      fv.perimeter *
+        this.lookupMultiplicationFactor *
+        (this.shearStrength / 1000) +
         fv.perimeter *
-          lookupMultiplicationFactor *
-          (shearStrength / 1000) *
+          this.lookupMultiplicationFactor *
+          (this.shearStrength / 1000) *
           0.05
     );
 
-    let bendingPressTonnage = 0;
-
-    let formingPressTonnage = Math.round(
+    this.formingPressTonnage = Math.round(
       fv.formLength *
-        lookupMultiplicationFactor *
-        (tensileYieldStrength / 1000) +
+        this.lookupMultiplicationFactor *
+        (this.tensileYieldStrength / 1000) +
         fv.formLength *
-          lookupMultiplicationFactor *
-          (tensileYieldStrength / 1000) *
+          this.lookupMultiplicationFactor *
+          (this.tensileYieldStrength / 1000) *
           0.3
     );
 
-    let totalTonnage =
-      blankingPressTonnage + bendingPressTonnage + formingPressTonnage;
+    this.totalTonnage =
+      this.blankingPressTonnage +
+      this.bendingPressTonnage +
+      this.formingPressTonnage;
 
     let transferMachine = {
       name: 'Transfer Die Press - 1,500kN Press Force',
@@ -615,23 +764,23 @@ export class AppComponent {
     offlineBlanking.overallCycleTime = Math.max(6, offlineBlanking.cycleTime);
 
     this.recommendedTransfer = {
-      force: totalTonnage,
+      force: this.totalTonnage,
 
-      length: Math.max(finalPartLength, finalPartWidth),
+      length: Math.max(this.finalPartLength, this.finalPartWidth),
 
-      width: Math.min(finalPartLength, finalPartWidth),
+      width: Math.min(this.finalPartLength, this.finalPartWidth),
 
-      height: height,
+      height: this.height,
     };
 
     this.recommendedOfflinceBlanking = {
-      force: offlineBlankingTonnage,
+      force: this.offlineBlankingTonnage,
 
-      length: Math.max(finalPartLength, finalPartWidth),
+      length: Math.max(this.finalPartLength, this.finalPartWidth),
 
-      width: Math.min(finalPartLength, finalPartWidth),
+      width: Math.min(this.finalPartLength, this.finalPartWidth),
 
-      height: height,
+      height: this.height,
     };
 
     // Update summary
@@ -658,7 +807,7 @@ export class AppComponent {
 
       partName: '',
 
-      materialCost: materialCost * grossWeight,
+      materialCost: this.materialCost * this.grossWeight,
 
       laborCost:
         (transferMachine.totalCycleTime / 3600) * transferMachine.laborRate +
@@ -730,6 +879,11 @@ export class AppComponent {
 
     this.summaryData.map((sd) => {
       sd.value = this.summary[sd.key];
+      return sd;
+    });
+
+    this.derivedMetrics.map((sd) => {
+      sd.value = this[sd.key];
       return sd;
     });
 

@@ -12,8 +12,21 @@
 
   <ng-container *ngIf="showSummary">
     <div class="card mt-3">
-      <div class="card-header text-white bg-info">Recommended Transfer</div>
       <div class="card-body table-responsive" #summaryCards>
+        <table class="table table-bordered">
+          <tbody>
+            <tr *ngFor="let s of derivedMetrics">
+              <th scope="row">{{ s.label }}</th>
+              <td>{{ s.value | number: '1.0-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header text-white bg-info">Recommended Transfer</div>
+      <div class="card-body table-responsive">
         <table class="table table-bordered">
           <tbody>
             <tr *ngFor="let rt of recommendedTransferSummary">
