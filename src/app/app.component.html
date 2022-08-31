@@ -1,5 +1,6 @@
 <div class="tcm">
   <h3>Transfer Cost Model</h3>
+  <div class="tabs-container">
   <tabset #tabs>
     <tab heading="Input" id="tab1">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -172,6 +173,7 @@
       </tabset>
     </tab>
   </tabset>
+  </div>
 
   <!-- <ng-container *ngIf="showSummary">
     <div class="card mt-3" #summaryCards>

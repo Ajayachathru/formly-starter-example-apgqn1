@@ -681,7 +681,7 @@ export class AppComponent implements OnInit {
                   return this.options.formState.selectOptionsData.material;
                 })
               ),
-              // change: this.onSubmit.bind(this),
+              change: this.onSubmit.bind(this),
             },
           },
           {
@@ -935,7 +935,7 @@ export class AppComponent implements OnInit {
 
       if (obj) {
         if (selectedMachine) {
-          obj.actual = selectedMachine[k];
+          obj.actual = Math.ceil(selectedMachine[k]);
         }
         obj.recommended = Math.ceil(this.recommendedTransfer[k]);
       }
@@ -948,7 +948,7 @@ export class AppComponent implements OnInit {
 
       if (obj) {
         if (selectedOfflinceBlankingMachine) {
-          obj.actual = selectedOfflinceBlankingMachine[k];
+          obj.actual = Math.ceil(selectedOfflinceBlankingMachine[k]);
         }
         obj.recommended = Math.ceil(this.recommendedOfflinceBlanking[k]);
       }

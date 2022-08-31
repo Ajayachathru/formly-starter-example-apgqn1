@@ -5,21 +5,24 @@ body {
   padding: 10px;
 }
 
+.tabs-container {
+  padding: 0 2rem 2rem 2rem;
+}
+
 .tcm {
   margin: 0 auto;
   width: 60%;
-  background: #f5f6f7;
+  background: white;
+  box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
 
   h3 {
-    text-align: center;
-    color: #2a7179;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    font-style: italic;
+    background-color: #0c61a2;
+    color: white;
+    padding: 1rem 0 1rem 1rem;
+    letter-spacing: 1px;
   }
 
   label {
-    color: #2b5da7;
     font-weight: 500;
     font-size: 14px;
 
@@ -27,11 +30,6 @@ body {
       color: red;
     }
   }
-}
-
-.tcm {
-  padding: 2rem;
-  background-color: white;
 }
 
 .display-flex {
@@ -96,4 +94,9 @@ tab {
 .table td {
   padding: 0.35rem;
   font-size: 14px;
+  font-weight: 500;
+}
+
+.bg-info {
+  background-color: #0c61a2 !important;
 }
