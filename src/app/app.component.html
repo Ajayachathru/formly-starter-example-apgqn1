@@ -1,16 +1,109 @@
 <div class="tcm">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <h3>Transfer Cost Model</h3>
-    <formly-form
-      [model]="model"
-      [fields]="fields"
-      [options]="options"
-      [form]="form"
-    ></formly-form>
-    <button type="submit" class="btn btn-primary">Calculate</button>
-  </form>
+  <h3>Transfer Cost Model</h3>
+  <tabset #tabs>
+    <tab heading="Inputs" id="tab1">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <formly-form
+          [model]="model"
+          [fields]="fields"
+          [options]="options"
+          [form]="form"
+        ></formly-form>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+      </form>
+    </tab>
+    <tab heading="Outputs" id="tab2" *ngIf="showSummary">
+      <tabset>
+        <tab heading="Derived" id="derived">
+          <table class="table table-bordered">
+            <tbody>
+              <tr *ngFor="let s of derivedMetrics">
+                <th scope="row">{{ s.label }}</th>
+                <td>{{ s.value | number: '1.0-2' }}</td>
+              </tr>
+            </tbody>
+          </table></tab
+        >
 
-  <ng-container *ngIf="showSummary">
+        <tab heading="Transfer Machine" id="transferMachine">
+          <table class="table table-bordered">
+            <tbody>
+              <tr *ngFor="let s of transferMachineSummary">
+                <th scope="row">{{ s.label }}</th>
+                <td *ngIf="s.type === 'string'">{{ s.value }}</td>
+                <td *ngIf="s.type !== 'string'">
+                  {{ s.value | number: '1.0-2' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </tab>
+
+        <tab heading="Offline Blanking" id="offlineBlankingSummary">
+          <table class="table table-bordered">
+            <tbody>
+              <tr *ngFor="let s of offlineBlankingSummary">
+                <th scope="row">{{ s.label }}</th>
+                <td *ngIf="s.type === 'string'">{{ s.value }}</td>
+                <td *ngIf="s.type !== 'string'">
+                  {{ s.value | number: '1.0-2' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </tab>
+
+        <tab heading="Recommended" id="recommended">
+          <div class="card mt-3">
+            <div class="card-header text-white bg-info">
+              Recommended Transfer
+            </div>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                  <tr *ngFor="let rt of recommendedTransferSummary">
+                    <th scope="row">{{ rt.label }}</th>
+                    <td>{{ rt.actual }}</td>
+                    <td>{{ rt.recommended | number: '1.0-2' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-header text-white bg-info">
+              Recommended Offline Blanking
+            </div>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                  <tr *ngFor="let rb of recommendedOfflinceBlankingSummary">
+                    <th scope="row">{{ rb.label }}</th>
+                    <td>{{ rb.actual }}</td>
+                    <td>{{ rb.recommended | number: '1.0-2' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </tab>
+
+        <tab heading="Summary" id="summary">
+          <table class="table table-bordered">
+            <tbody>
+              <tr *ngFor="let s of summaryData">
+                <th scope="row">{{ s.label }}</th>
+                <td>{{ s.value | number: '1.0-2' }}</td>
+              </tr>
+            </tbody>
+          </table></tab
+        >
+      </tabset>
+    </tab>
+  </tabset>
+
+  <!-- <ng-container *ngIf="showSummary">
     <div class="card mt-3" #summaryCards>
       <div class="card-body table-responsive">
         <table class="table table-bordered">
@@ -103,5 +196,5 @@
         </table>
       </div>
     </div>
-  </ng-container>
+  </ng-container> -->
 </div>

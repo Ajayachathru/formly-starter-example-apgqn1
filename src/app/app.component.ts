@@ -1,110 +1,33 @@
-import { Component, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
-
-interface FormModel {
-  length: number;
-
-  width: number;
-
-  thickness: number;
-
-  height: number;
-
-  partSurfaceArea: number;
-
-  partVolume: number;
-
-  perimeter: number;
-
-  bendLengths: number;
-
-  formLength: number;
-
-  material: string;
-
-  angle: number;
-
-  count: number;
-
-  annualVolume: number;
-
-  productionLife: number;
-
-  isTrimRequired: boolean;
-}
-
-interface RecommendedProps {
-  force: number;
-
-  length: number;
-
-  width: number;
-
-  height: number;
-}
-
-interface RecommendedSummary {
-  key: string;
-
-  label: string;
-
-  actual: number;
-
-  recommended: number;
-}
-
-interface Summary {
-  partNo: string;
-
-  partName: string;
-
-  materialCost: number;
-
-  laborCost: number;
-
-  directOverheadCost: number;
-
-  amortizedBatchSetup: number;
-
-  otherDirectCost: number;
-
-  indirectOverheadCost: number;
-
-  mfgCost: number;
-
-  buyPartCost: number;
-
-  totalVariableCost: number;
-
-  qty: number;
-
-  totalPiecePartCost: number;
-
-  sga: number;
-
-  margin: number;
-
-  totalWithSgaAndMargin: number;
-}
-
-interface SummaryData {
-  key: string;
-
-  label: string;
-
-  value: number;
-
-  type?: string;
-}
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
+import { map } from 'rxjs/operators';
+import {
+  FormModel,
+  MaterialData,
+  RecommendedProps,
+  RecommendedSummary,
+  Summary,
+  SummaryData,
+} from './app.interface';
+import { AppService } from './app.service';
 
 @Component({
   selector: 'formly-app-example',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  constructor(private appService: AppService) {}
+
+  @ViewChild('tabs', { static: false }) tabs?: TabsetComponent;
   @ViewChild('summaryCards') summaryCards;
   showSummary = false;
+
+  MATERIALS: MaterialData[] = [];
+
+  transferMachineOptions: Array<string>;
 
   recommendedTransfer: RecommendedProps;
   recommendedTransferSummary: RecommendedSummary[] = [
@@ -473,248 +396,15 @@ export class AppComponent {
   ];
 
   form = new FormGroup({});
+  options: FormlyFormOptions = {
+    formState: {
+      selectOptionsData: {
+        material: [],
+      },
+    },
+  };
   model: FormModel;
-  options: FormlyFormOptions = {};
-  fields: FormlyFieldConfig[] = [
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'length',
-          type: 'input',
-          defaultValue: 600,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Blank Length',
-            placeholder: 'Enter Blank Length',
-            required: true,
-          },
-        },
-        {
-          key: 'width',
-          type: 'input',
-          defaultValue: 600,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Blank Width',
-            placeholder: 'Enter Blank Width',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'thickness',
-          type: 'input',
-          defaultValue: 2,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Thickness',
-            placeholder: 'Enter Thickness',
-            required: true,
-          },
-        },
-        {
-          key: 'height',
-          type: 'input',
-          defaultValue: 22.41,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Height',
-            placeholder: 'Enter height',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'partSurfaceArea',
-          type: 'input',
-          defaultValue: 68_814.37,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Part Surface Area',
-            placeholder: 'Enter Part Surface Area',
-            required: true,
-          },
-        },
-        {
-          key: 'partVolume',
-          type: 'input',
-          defaultValue: 71_762.2,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Part Volume',
-            placeholder: 'Enter Part Volume',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'perimeter',
-          type: 'input',
-          defaultValue: 7_129.28,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Blank & Holes / slots / cutouts Perimeter',
-            placeholder: 'Enter Blank & Holes / slots / cutouts Perimeter',
-            required: true,
-          },
-        },
-        {
-          key: 'bendLengths',
-          type: 'input',
-          defaultValue: 0,
-          className: 'flex-1',
-          templateOptions: {
-            min: 0,
-            type: 'number',
-            label: 'Total Bend Lengths',
-            placeholder: 'Enter Total Bend Lengths',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'formLength',
-          type: 'input',
-          defaultValue: 8_304.74,
-          className: 'flex-1',
-          templateOptions: {
-            min: 1,
-            type: 'number',
-            label: 'Total Form length',
-            placeholder: 'Enter Total Form length',
-            required: true,
-          },
-        },
-        {
-          key: 'material',
-          type: 'input',
-          defaultValue: 'Steel, Hot Worked, AISI 1006',
-          className: 'flex-1',
-          templateOptions: {
-            type: 'text',
-            label: 'Material',
-            placeholder: 'Enter Material',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'angle',
-          type: 'input',
-          defaultValue: 90,
-          className: 'flex-1',
-          templateOptions: {
-            type: 'number',
-            label: 'Angle',
-            placeholder: 'Enter Angle',
-            required: true,
-          },
-        },
-        {
-          key: 'count',
-          type: 'input',
-          defaultValue: 1,
-          className: 'flex-1',
-          templateOptions: {
-            type: 'number',
-            label: 'count',
-            placeholder: 'Enter count',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'annualVolume',
-          type: 'input',
-          defaultValue: 2_50_000,
-          className: 'flex-1',
-          templateOptions: {
-            type: 'number',
-            label: 'Annual Volume',
-            placeholder: 'Enter Annual Volume',
-            required: true,
-          },
-        },
-        {
-          key: 'productionLife',
-          type: 'input',
-          defaultValue: 5,
-          className: 'flex-1',
-          templateOptions: {
-            type: 'number',
-            label: 'Production Life',
-            placeholder: 'Enter Production Life',
-            required: true,
-          },
-        },
-      ],
-    },
-
-    {
-      fieldGroupClassName: 'display-flex',
-      fieldGroup: [
-        {
-          key: 'isTrimRequired',
-          type: 'select',
-          defaultValue: false,
-          className: 'flex-1',
-          templateOptions: {
-            options: [
-              { label: 'YES', value: true },
-              { label: 'NO', value: false },
-            ],
-            label: 'Trim Required ?',
-            required: true,
-          },
-        },
-      ],
-    },
-  ];
+  fields: FormlyFieldConfig[];
 
   edgeMarginWidth = 8;
 
@@ -811,6 +501,245 @@ export class AppComponent {
 
     setupTime: 0.5,
   };
+
+  ngOnInit() {
+    this.initFormFields();
+    this.appService.getMaterials().subscribe((materials: MaterialData[]) => {
+      this.MATERIALS = materials;
+    });
+  }
+
+  initFormFields() {
+    this.fields = [
+      {
+        fieldGroupClassName: 'display-flex',
+        fieldGroup: [
+          {
+            key: 'length',
+            type: 'input',
+            defaultValue: 600,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Blank Length',
+              placeholder: 'Enter Blank Length',
+              required: true,
+            },
+          },
+          {
+            key: 'width',
+            type: 'input',
+            defaultValue: 600,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Blank Width',
+              placeholder: 'Enter Blank Width',
+              required: true,
+            },
+          },
+          {
+            key: 'thickness',
+            type: 'input',
+            defaultValue: 2,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Thickness',
+              placeholder: 'Enter Thickness',
+              required: true,
+            },
+          },
+        ],
+      },
+
+      {
+        fieldGroupClassName: 'display-flex',
+        fieldGroup: [
+          {
+            key: 'height',
+            type: 'input',
+            defaultValue: 22.41,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Height',
+              placeholder: 'Enter height',
+              required: true,
+            },
+          },
+          {
+            key: 'partSurfaceArea',
+            type: 'input',
+            defaultValue: 68_814.37,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Part Surface Area',
+              placeholder: 'Enter Part Surface Area',
+              required: true,
+            },
+          },
+          {
+            key: 'partVolume',
+            type: 'input',
+            defaultValue: 71_762.2,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Part Volume',
+              placeholder: 'Enter Part Volume',
+              required: true,
+            },
+          },
+        ],
+      },
+
+      {
+        fieldGroupClassName: 'display-flex',
+        fieldGroup: [
+          {
+            key: 'perimeter',
+            type: 'input',
+            defaultValue: 7_129.28,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Perimeter',
+              placeholder: 'Enter Blank & Holes / slots / cutouts Perimeter',
+              required: true,
+            },
+          },
+          {
+            key: 'bendLengths',
+            type: 'input',
+            defaultValue: 0,
+            className: 'flex-1',
+            templateOptions: {
+              min: 0,
+              type: 'number',
+              label: 'Total Bend Lengths',
+              placeholder: 'Enter Total Bend Lengths',
+              required: true,
+            },
+          },
+          {
+            key: 'formLength',
+            type: 'input',
+            defaultValue: 8_304.74,
+            className: 'flex-1',
+            templateOptions: {
+              min: 1,
+              type: 'number',
+              label: 'Total Form length',
+              placeholder: 'Enter Total Form length',
+              required: true,
+            },
+          },
+        ],
+      },
+
+      {
+        fieldGroupClassName: 'display-flex',
+        fieldGroup: [
+          {
+            key: 'material',
+            type: 'select',
+            defaultValue: 'Steel, Hot Worked, AISI 1006',
+            className: 'flex-1',
+            templateOptions: {
+              label: 'Material',
+              required: true,
+              valueProp: 'name',
+              labelProp: 'name',
+              options: this.appService.getMaterials().pipe(
+                map((data: MaterialData[]) => {
+                  this.options.formState.selectOptionsData.material = data;
+                  return this.options.formState.selectOptionsData.material;
+                })
+              ),
+              // change: this.onSubmit.bind(this),
+            },
+          },
+          {
+            key: 'angle',
+            type: 'input',
+            defaultValue: 90,
+            className: 'flex-1',
+            templateOptions: {
+              type: 'number',
+              label: 'Angle',
+              placeholder: 'Enter Angle',
+              required: true,
+            },
+          },
+          {
+            key: 'count',
+            type: 'input',
+            defaultValue: 1,
+            className: 'flex-1',
+            templateOptions: {
+              type: 'number',
+              label: 'count',
+              placeholder: 'Enter count',
+              required: true,
+            },
+          },
+        ],
+      },
+
+      {
+        fieldGroupClassName: 'display-flex',
+        fieldGroup: [
+          {
+            key: 'annualVolume',
+            type: 'input',
+            defaultValue: 2_50_000,
+            className: 'flex-1',
+            templateOptions: {
+              type: 'number',
+              label: 'Annual Volume',
+              placeholder: 'Enter Annual Volume',
+              required: true,
+            },
+          },
+          {
+            key: 'productionLife',
+            type: 'input',
+            defaultValue: 5,
+            className: 'flex-1',
+            templateOptions: {
+              type: 'number',
+              label: 'Production Life',
+              placeholder: 'Enter Production Life',
+              required: true,
+            },
+          },
+          {
+            key: 'isTrimRequired',
+            type: 'select',
+            defaultValue: false,
+            className: 'flex-1',
+            templateOptions: {
+              options: [
+                { label: 'YES', value: true },
+                { label: 'NO', value: false },
+              ],
+              label: 'Trim Required ?',
+              required: true,
+            },
+          },
+        ],
+      },
+    ];
+  }
 
   onSubmit() {
     const fv: FormModel = this.form.value;
@@ -1059,10 +988,7 @@ export class AppComponent {
     this.showSummary = true;
 
     setTimeout(() => {
-      this.summaryCards.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 200);
+      this.tabs.tabs[1].active = true;
+    }, 100);
   }
 }

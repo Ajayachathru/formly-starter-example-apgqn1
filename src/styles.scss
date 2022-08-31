@@ -1,20 +1,20 @@
 @import '~bootstrap/scss/bootstrap.scss';
 body {
   margin: 0 auto;
-  background-color: #c0d5da;
+  background-color: #e2e5f0;
   padding: 10px;
 }
 
 .tcm {
   margin: 0 auto;
-  width: 50%;
+  width: 60%;
   background: #f5f6f7;
 
   h3 {
     text-align: center;
     color: #2a7179;
     letter-spacing: 0.5px;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     font-style: italic;
   }
 
@@ -84,4 +84,16 @@ body {
   .display-flex {
     display: block;
   }
+}
+
+tab {
+  padding: 10px;
+  border: 1px solid transparent;
+  border-color: #fff #dee2e6 #dee2e6 #dee2e6;
+}
+
+.table th,
+.table td {
+  padding: 0.35rem;
+  font-size: 14px;
 }
