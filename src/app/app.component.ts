@@ -5,12 +5,14 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { map } from 'rxjs/operators';
 import {
+  BlankingMachineData,
   FormModel,
   MaterialData,
   RecommendedProps,
   RecommendedSummary,
   Summary,
   SummaryData,
+  TransferMachineData,
 } from './app.interface';
 import { AppService } from './app.service';
 
@@ -26,6 +28,8 @@ export class AppComponent implements OnInit {
   showSummary = false;
 
   MATERIALS: MaterialData[] = [];
+  TF_MACHINES: TransferMachineData[] = [];
+  BLANKING_MACHINES: BlankingMachineData[] = [];
 
   transferMachineOptions: Array<string>;
 
@@ -34,25 +38,25 @@ export class AppComponent implements OnInit {
     {
       key: 'force',
       label: 'Clamping Force (kN)',
-      actual: 1500,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'length',
       label: 'Press Table Length (mm)',
-      actual: 1300,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'width',
       label: 'Press Table Width (mm)',
-      actual: 700,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'height',
       label: 'Shut Height (mm)',
-      actual: 450,
+      actual: 0,
       recommended: 0,
     },
   ];
@@ -62,25 +66,25 @@ export class AppComponent implements OnInit {
     {
       key: 'force',
       label: 'Clamping Force (kN)',
-      actual: 5000,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'length',
       label: 'Press Table Length (mm)',
-      actual: 2000,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'width',
       label: 'Press Table Width (mm)',
-      actual: 1300,
+      actual: 0,
       recommended: 0,
     },
     {
       key: 'height',
       label: 'Shut Height (mm)',
-      actual: 650,
+      actual: 0,
       recommended: 0,
     },
   ];
@@ -446,8 +450,6 @@ export class AppComponent implements OnInit {
 
   offlineBlankingTonnage = 0;
 
-  lookupMultiplicationFactor = 2;
-
   blankingPressTonnage = 0;
 
   bendingPressTonnage = 0;
@@ -489,17 +491,17 @@ export class AppComponent implements OnInit {
   };
 
   offlineBlanking = {
-    name: 'Offline Blank Press - 5,000kN Press Force',
+    name: '',
 
-    laborRate: 5.48,
+    laborRate: 0,
 
-    directOverhead: 48.69,
+    directOverhead: 0,
 
-    cycleTime: 2,
+    cycleTime: 0,
 
     overallCycleTime: 0,
 
-    setupTime: 0.5,
+    setupTime: 0,
   };
 
   ngOnInit() {
@@ -507,6 +509,20 @@ export class AppComponent implements OnInit {
     this.appService.getMaterials().subscribe((materials: MaterialData[]) => {
       this.MATERIALS = materials;
     });
+
+    this.appService
+      .getMachines()
+      .subscribe((machines: TransferMachineData[]) => {
+        this.TF_MACHINES = machines;
+        this.transferMachine['name'] = machines[0].name;
+      });
+
+    this.appService
+      .getBlankingMachines()
+      .subscribe((machines: BlankingMachineData[]) => {
+        this.BLANKING_MACHINES = machines;
+        this.offlineBlanking['name'] = machines[0].name;
+      });
   }
 
   initFormFields() {
@@ -741,6 +757,8 @@ export class AppComponent implements OnInit {
     ];
   }
 
+  onChangeTrasnferMachine() {}
+
   onSubmit() {
     const fv: FormModel = this.form.value;
 
@@ -795,23 +813,13 @@ export class AppComponent implements OnInit {
       (this.shearStrength / 1000);
 
     this.blankingPressTonnage = Math.round(
-      fv.perimeter *
-        this.lookupMultiplicationFactor *
-        (this.shearStrength / 1000) +
-        fv.perimeter *
-          this.lookupMultiplicationFactor *
-          (this.shearStrength / 1000) *
-          0.05
+      fv.perimeter * fv.thickness * (this.shearStrength / 1000) +
+        fv.perimeter * fv.thickness * (this.shearStrength / 1000) * 0.05
     );
 
     this.formingPressTonnage = Math.round(
-      fv.formLength *
-        this.lookupMultiplicationFactor *
-        (this.tensileYieldStrength / 1000) +
-        fv.formLength *
-          this.lookupMultiplicationFactor *
-          (this.tensileYieldStrength / 1000) *
-          0.3
+      fv.formLength * fv.thickness * (this.tensileYieldStrength / 1000) +
+        fv.formLength * fv.thickness * (this.tensileYieldStrength / 1000) * 0.3
     );
 
     this.totalTonnage =
@@ -819,38 +827,63 @@ export class AppComponent implements OnInit {
       this.bendingPressTonnage +
       this.formingPressTonnage;
 
-    this.transferMachine = {
-      name: 'Transfer Die Press - 1,500kN Press Force',
+    const selectedMachine = this.TF_MACHINES.find(
+      (m) => m.name === this.transferMachine.name
+    );
 
-      reach: 1,
+    if (selectedMachine) {
+      [
+        'reach',
+        'lift',
+        'mechTransfer',
+        'drop',
+        'retract',
+        'setupTime',
+        'noOfLabor',
+        'laborRate',
+        'directOverhead',
+      ].forEach((k) => {
+        this.transferMachine[k] = selectedMachine[k];
+      });
+      this.transferMachine['strokePerMinute'] = Math.ceil(
+        selectedMachine.strokePerMinute / 100
+      );
+    }
 
-      lift: 1,
+    // this.transferMachine = {
+    //   name: 'Transfer Die Press - 1,500kN Press Force',
 
-      mechTransfer: 3048,
+    //   reach: 1,
 
-      drop: 1,
+    //   lift: 1,
 
-      retract: 1,
+    //   mechTransfer: 3048,
 
-      strokePerMinute: 1,
+    //   drop: 1,
 
-      formDepthTime: Math.round(fv.height / 100),
+    //   retract: 1,
 
-      holdingTime: 0,
+    //   strokePerMinute: 1,
 
-      totalCycleTime: 0,
+    //   formDepthTime: Math.round(fv.height / 100),
 
-      setupTime: 0.5,
+    //   holdingTime: 0,
 
-      noOfLabor: 1,
+    //   totalCycleTime: 0,
 
-      laborRate: 5.48,
+    //   setupTime: 0.5,
 
-      directOverhead: 11.74,
+    //   noOfLabor: 1,
 
-      batchQty: fv.annualVolume / 12,
-    };
+    //   laborRate: 5.48,
 
+    //   directOverhead: 11.74,
+
+    //   batchQty: fv.annualVolume / 12,
+    // };
+
+    this.transferMachine['formDepthTime'] = Math.round(fv.height / 100);
+    this.transferMachine['batchQty'] = Math.round(fv.annualVolume / 12);
     this.transferMachine['totalCycleTime'] =
       this.transferMachine.reach +
       this.transferMachine.lift +
@@ -858,6 +891,18 @@ export class AppComponent implements OnInit {
       this.transferMachine.retract +
       this.transferMachine.strokePerMinute +
       this.transferMachine.holdingTime;
+
+    const selectedOfflinceBlankingMachine = this.BLANKING_MACHINES.find(
+      (m) => m.name === this.offlineBlanking.name
+    );
+
+    if (selectedOfflinceBlankingMachine) {
+      ['laborRate', 'directOverhead', 'cycleTime', 'setupTime'].forEach((k) => {
+        this.offlineBlanking[k] = selectedOfflinceBlankingMachine[k];
+      });
+
+      this.density /= 1000;
+    }
 
     this.offlineBlanking.overallCycleTime = Math.max(
       6,
@@ -889,7 +934,10 @@ export class AppComponent implements OnInit {
       const obj = this.recommendedTransferSummary.find((rTs) => rTs.key === k);
 
       if (obj) {
-        obj.recommended = this.recommendedTransfer[k];
+        if (selectedMachine) {
+          obj.actual = selectedMachine[k];
+        }
+        obj.recommended = Math.ceil(this.recommendedTransfer[k]);
       }
     }
 
@@ -899,7 +947,10 @@ export class AppComponent implements OnInit {
       );
 
       if (obj) {
-        obj.recommended = this.recommendedOfflinceBlanking[k];
+        if (selectedOfflinceBlankingMachine) {
+          obj.actual = selectedOfflinceBlankingMachine[k];
+        }
+        obj.recommended = Math.ceil(this.recommendedOfflinceBlanking[k]);
       }
     }
 

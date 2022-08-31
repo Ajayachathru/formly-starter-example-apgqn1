@@ -1,7 +1,7 @@
 <div class="tcm">
   <h3>Transfer Cost Model</h3>
   <tabset #tabs>
-    <tab heading="Inputs" id="tab1">
+    <tab heading="Input" id="tab1">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <formly-form
           [model]="model"
@@ -12,7 +12,7 @@
         <button type="submit" class="btn btn-primary">Calculate</button>
       </form>
     </tab>
-    <tab heading="Outputs" id="tab2" *ngIf="showSummary">
+    <tab heading="Output" id="tab2" *ngIf="showSummary">
       <tabset>
         <tab heading="Material" id="derived">
           <table class="table table-bordered">
@@ -28,14 +28,32 @@
         <tab heading="Transfer Machine" id="transferMachine">
           <table class="table table-bordered">
             <tbody>
-              <tr *ngFor="let s of transferMachineSummary">
+              <tr *ngFor="let s of transferMachineSummary; let isFirst = first">
                 <th class="col-md-5" scope="row">{{ s.label }}</th>
-                <td class="col-md-7" *ngIf="s.type === 'string'">
-                  {{ s.value }}
-                </td>
-                <td class="col-md-7" *ngIf="s.type !== 'string'">
-                  {{ s.value | number: '1.0-2' }}
-                </td>
+
+                <ng-container *ngIf="isFirst; else tfElseTemplate">
+                  <td class="col-md-7">
+                    <select
+                      class="form-control"
+                      name="tfMachine"
+                      [(ngModel)]="transferMachine.name"
+                      (change)="onSubmit()"
+                    >
+                      <option *ngFor="let o of TF_MACHINES" [(value)]="o.name">
+                        {{ o.name }}
+                      </option>
+                    </select>
+                  </td>
+                </ng-container>
+
+                <ng-template #tfElseTemplate>
+                  <td class="col-md-7" *ngIf="s.type === 'string'">
+                    {{ s.value }}
+                  </td>
+                  <td class="col-md-7" *ngIf="s.type !== 'string'">
+                    {{ s.value | number: '1.0-2' }}
+                  </td>
+                </ng-template>
               </tr>
             </tbody>
           </table>
@@ -44,14 +62,35 @@
         <tab heading="Offline Blanking" id="offlineBlankingSummary">
           <table class="table table-bordered">
             <tbody>
-              <tr *ngFor="let s of offlineBlankingSummary">
+              <tr *ngFor="let s of offlineBlankingSummary; let isFirst = first">
                 <th class="col-md-5" scope="row">{{ s.label }}</th>
-                <td class="col-md-7" *ngIf="s.type === 'string'">
-                  {{ s.value }}
-                </td>
-                <td class="col-md-7" *ngIf="s.type !== 'string'">
-                  {{ s.value | number: '1.0-2' }}
-                </td>
+
+                <ng-container *ngIf="isFirst; else tfElseTemplate">
+                  <td class="col-md-7">
+                    <select
+                      class="form-control"
+                      name="offlineBlankingMachine"
+                      [(ngModel)]="offlineBlanking.name"
+                      (change)="onSubmit()"
+                    >
+                      <option
+                        *ngFor="let o of BLANKING_MACHINES"
+                        [(value)]="o.name"
+                      >
+                        {{ o.name }}
+                      </option>
+                    </select>
+                  </td>
+                </ng-container>
+
+                <ng-template #tfElseTemplate>
+                  <td class="col-md-7" *ngIf="s.type === 'string'">
+                    {{ s.value }}
+                  </td>
+                  <td class="col-md-7" *ngIf="s.type !== 'string'">
+                    {{ s.value | number: '1.0-2' }}
+                  </td>
+                </ng-template>
               </tr>
             </tbody>
           </table>

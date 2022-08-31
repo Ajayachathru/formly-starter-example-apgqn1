@@ -16,6 +16,47 @@ export interface MaterialData {
   rLPA: number;
 }
 
+export interface TransferMachineData {
+  name: string;
+  laborRate: number;
+  customWorkCenterDirectOverheadRate: number;
+  customWorkCenterIndirectOverheadRate: number;
+  numberOfOperators: number;
+  laborTimeStandard: number;
+  setupTime: number;
+  strokePerMinute: number;
+  constCoeffHandlingTime: number;
+  massCoeffHandlingTime: number;
+  pressForce: number;
+  pressTableLength: number;
+  pressTableWidth: number;
+  shutHeight: number;
+  pitchMargin: number;
+  sideMargin: number;
+  trimStripWidth: number;
+  transferMechReach: number;
+  transferMechLift: number;
+  mechTransfer: number;
+  drop: number;
+  retract: number;
+  machinePrice: number;
+  machineLength: number;
+  machineWidth: number;
+}
+
+export interface BlankingMachineData {
+  name: string;
+  laborRate: number;
+  directOverhead: number;
+  cycleTime: number;
+  overallCycleTime: number;
+  setupTime: number;
+  force: number;
+  length: number;
+  width: number;
+  height: number;
+}
+
 export interface TransferMachine {
   name: string;
   reach: number;
