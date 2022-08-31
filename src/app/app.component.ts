@@ -414,7 +414,7 @@ export class AppComponent implements OnInit {
 
   partAddendumPerSide = 0;
 
-  density = 7.85;
+  density = 0;
 
   finalPartLength = 0;
 
@@ -422,25 +422,25 @@ export class AppComponent implements OnInit {
 
   partWeight = 0;
 
-  hardness = 125;
+  hardness = 0;
 
-  tensileYieldStrength = 240;
+  tensileYieldStrength = 0;
 
-  ultimateTensileStrength = 335;
+  ultimateTensileStrength = 0;
 
-  shearStrength = 221;
+  shearStrength = 0;
 
-  youngModulus = 207000;
+  youngModulus = 0;
 
-  poissonRatio = 0.28;
+  poissonRatio = 0;
 
-  kSHE = 543;
+  kSHE = 0;
 
-  nSHE = 0.21;
+  nSHE = 0;
 
-  rLPA = 0.99;
+  rLPA = 0;
 
-  materialCost = 1.63;
+  materialCost = 0;
 
   grossWeight = 0;
 
@@ -743,6 +743,28 @@ export class AppComponent implements OnInit {
 
   onSubmit() {
     const fv: FormModel = this.form.value;
+
+    const selectedMaterial = this.MATERIALS.find((m) => m.name === fv.material);
+
+    if (selectedMaterial) {
+      [
+        'density',
+        'hardness',
+        'tensileYieldStrength',
+        'ultimateTensileStrength',
+        'shearStrength',
+        'youngModulus',
+        'poissonRatio',
+        'kSHE',
+        'nSHE',
+        'rLPA',
+        'materialCost',
+      ].forEach((k) => {
+        this[k] = selectedMaterial[k];
+      });
+
+      this.density /= 1000;
+    }
 
     this.height = fv.height;
 

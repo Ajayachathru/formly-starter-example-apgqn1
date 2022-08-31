@@ -14,12 +14,12 @@
     </tab>
     <tab heading="Outputs" id="tab2" *ngIf="showSummary">
       <tabset>
-        <tab heading="Derived" id="derived">
+        <tab heading="Material" id="derived">
           <table class="table table-bordered">
             <tbody>
               <tr *ngFor="let s of derivedMetrics">
-                <th scope="row">{{ s.label }}</th>
-                <td>{{ s.value | number: '1.0-2' }}</td>
+                <th class="col-md-6" scope="row">{{ s.label }}</th>
+                <td class="col-md-6">{{ s.value | number: '1.0-2' }}</td>
               </tr>
             </tbody>
           </table></tab
@@ -29,9 +29,11 @@
           <table class="table table-bordered">
             <tbody>
               <tr *ngFor="let s of transferMachineSummary">
-                <th scope="row">{{ s.label }}</th>
-                <td *ngIf="s.type === 'string'">{{ s.value }}</td>
-                <td *ngIf="s.type !== 'string'">
+                <th class="col-md-5" scope="row">{{ s.label }}</th>
+                <td class="col-md-7" *ngIf="s.type === 'string'">
+                  {{ s.value }}
+                </td>
+                <td class="col-md-7" *ngIf="s.type !== 'string'">
                   {{ s.value | number: '1.0-2' }}
                 </td>
               </tr>
@@ -43,9 +45,11 @@
           <table class="table table-bordered">
             <tbody>
               <tr *ngFor="let s of offlineBlankingSummary">
-                <th scope="row">{{ s.label }}</th>
-                <td *ngIf="s.type === 'string'">{{ s.value }}</td>
-                <td *ngIf="s.type !== 'string'">
+                <th class="col-md-5" scope="row">{{ s.label }}</th>
+                <td class="col-md-7" *ngIf="s.type === 'string'">
+                  {{ s.value }}
+                </td>
+                <td class="col-md-7" *ngIf="s.type !== 'string'">
                   {{ s.value | number: '1.0-2' }}
                 </td>
               </tr>
@@ -62,9 +66,19 @@
               <table class="table table-bordered">
                 <tbody>
                   <tr *ngFor="let rt of recommendedTransferSummary">
-                    <th scope="row">{{ rt.label }}</th>
-                    <td>{{ rt.actual }}</td>
-                    <td>{{ rt.recommended | number: '1.0-2' }}</td>
+                    <th class="col-md-6" scope="row">{{ rt.label }}</th>
+                    <td
+                      [ngClass]="{
+                        'bg-danger': rt.actual < rt.recommended,
+                        'bg-success': rt.actual >= rt.recommended
+                      }"
+                      class="text-white col-md-3"
+                    >
+                      {{ rt.actual }}
+                    </td>
+                    <td class="col-md-3">
+                      {{ rt.recommended | number: '1.0-2' }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -79,9 +93,19 @@
               <table class="table table-bordered">
                 <tbody>
                   <tr *ngFor="let rb of recommendedOfflinceBlankingSummary">
-                    <th scope="row">{{ rb.label }}</th>
-                    <td>{{ rb.actual }}</td>
-                    <td>{{ rb.recommended | number: '1.0-2' }}</td>
+                    <th class="col-md-6" scope="row">{{ rb.label }}</th>
+                    <td
+                      [ngClass]="{
+                        'bg-danger': rb.actual < rb.recommended,
+                        'bg-success': rb.actual >= rb.recommended
+                      }"
+                      class="text-white col-md-3"
+                    >
+                      {{ rb.actual }}
+                    </td>
+                    <td class="col-md-3">
+                      {{ rb.recommended | number: '1.0-2' }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -93,8 +117,8 @@
           <table class="table table-bordered">
             <tbody>
               <tr *ngFor="let s of summaryData">
-                <th scope="row">{{ s.label }}</th>
-                <td>{{ s.value | number: '1.0-2' }}</td>
+                <th class="col-md-6" scope="row">{{ s.label }}</th>
+                <td class="col-md-6">{{ s.value | number: '1.0-2' }}</td>
               </tr>
             </tbody>
           </table></tab
