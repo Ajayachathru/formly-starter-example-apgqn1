@@ -116,9 +116,16 @@
         <tab heading="Summary" id="summary">
           <table class="table table-bordered">
             <tbody>
-              <tr *ngFor="let s of summaryData">
+              <tr *ngFor="let s of summaryData; let last = last">
                 <th class="col-md-6" scope="row">{{ s.label }}</th>
-                <td class="col-md-6">{{ s.value | number: '1.0-2' }}</td>
+                <td
+                  [ngClass]="{
+                    'text-white bg-success': last
+                  }"
+                  class="col-md-3"
+                >
+                  {{ s.value | number: '1.0-2' }}
+                </td>
               </tr>
             </tbody>
           </table></tab
